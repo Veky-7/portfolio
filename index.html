@@ -308,6 +308,86 @@ section{padding:64px 0 0}
   .gem,.halo,.ring{animation:none}.js .reveal{opacity:1;transform:none;transition:none}}
 </style>
 
+
+<style id="intro-css">
+html.intro-on,html.intro-on body{overflow:hidden}
+html.intro-on .gem,html.intro-on .gem *,html.intro-on .halo,html.intro-on .ring{animation-play-state:paused!important}
+#intro{position:fixed;inset:0;z-index:9999;display:none;place-items:center;cursor:pointer;background:#241C36;
+ transition:background .9s ease .35s,opacity .7s ease .1s,visibility 0s linear .8s;
+ font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+html.intro-on #intro{display:grid}
+#intro.shrink{background:#FDFBFF}
+#intro.gone{opacity:0;visibility:hidden}
+#intro .glow{position:absolute;inset:0;pointer-events:none;transition:opacity .6s;
+ background:radial-gradient(60vw 50vw at 85% 8%,rgba(255,146,113,.30),transparent 62%),
+  radial-gradient(55vw 50vw at 5% 40%,rgba(167,139,245,.30),transparent 62%),
+  radial-gradient(50vw 45vw at 95% 80%,rgba(95,215,192,.20),transparent 62%)}
+#intro.shrink .glow{opacity:.55}
+/* 봉투 */
+.env{position:relative;width:min(86vw,540px);aspect-ratio:1.5/1;transform-origin:50% 62%;transform:scale(var(--z,8));
+ transition:transform 1.25s cubic-bezier(.7,0,.2,1)}
+#intro.shrink .env{transform:scale(1)}
+.env .back{position:absolute;inset:0;background:#1a1428;border-radius:12px;box-shadow:0 30px 60px -24px rgba(36,28,54,.6)}
+.env .letter{position:absolute;left:6%;right:6%;top:8%;bottom:6%;background:#fff;border-radius:10px;z-index:2;
+ border:1px solid #e9e3f7;display:grid;place-content:center;text-align:center;gap:6px;padding:14px;
+ transition:transform 1s cubic-bezier(.2,.8,.2,1)}
+.env .letter .lb{font-size:11px;font-weight:800;letter-spacing:.26em;color:#FF9271}
+.env .letter .nm{font-size:clamp(28px,7vw,42px);font-weight:900;letter-spacing:-.04em;color:#241C36;line-height:1.1}
+.env .letter .sub{font-size:14px;font-weight:700;color:#6E6789}
+.env .pocket{position:absolute;inset:0;border-radius:12px;overflow:hidden;pointer-events:none;z-index:3}
+.env .pocket i{position:absolute;inset:0;background:#2b2140}
+.env .pocket i.l{clip-path:polygon(0 0,52% 56%,0 100%)}
+.env .pocket i.r{clip-path:polygon(100% 0,48% 56%,100% 100%)}
+.env .pocket i.b{background:#30254a;clip-path:polygon(0 100%,50% 48%,100% 100%)}
+.env .flap{position:absolute;left:0;right:0;top:0;height:62%;transform-origin:50% 0;z-index:4;
+ transition:transform .9s cubic-bezier(.5,0,.2,1),z-index 0s .55s}
+.env .flap i{position:absolute;inset:0;background:#3B3155;clip-path:polygon(0 0,100% 0,50% 100%);
+ filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+/* 도장 — 화면에 고정(봉투만 작아진다) */
+.iseal{position:fixed;left:50%;top:calc(50% + min(86vw,540px)*.08);width:78px;height:78px;margin:-39px 0 0 -39px;z-index:7;
+ border-radius:50%;display:grid;place-items:center;transition:transform .45s,opacity .45s;
+ background:radial-gradient(circle at 32% 28%,#FFD3C2 0,#FF9271 40%,#A78BF5 100%);
+ box-shadow:0 8px 18px -6px rgba(36,28,54,.6),inset 0 -4px 8px rgba(36,28,54,.25),inset 0 3px 6px rgba(255,255,255,.4)}
+.iseal::before{content:'';position:absolute;inset:9px;border-radius:50%;border:1.5px solid rgba(255,255,255,.6)}
+.iseal b{font-size:26px;font-weight:900;color:#fff;text-shadow:0 1px 2px rgba(36,28,54,.35)}
+#intro.open .iseal{transform:scale(1.25) rotate(-12deg);opacity:0}
+#intro.open .env .flap{transform:rotateX(180deg);z-index:1;transition-delay:.25s,.8s}
+#intro.open .env .letter{transform:translateY(-62%) scale(1.04);transition-delay:.95s}
+#intro.zoom .env{transition:transform .7s cubic-bezier(.6,0,.3,1),opacity .4s .15s;transform:translateY(20%) scale(3);opacity:0}
+/* 표지 글 */
+.icover{position:fixed;inset:0;display:grid;align-content:end;justify-items:center;text-align:center;gap:10px;z-index:6;pointer-events:none;
+ padding-bottom:calc(50vh - min(86vw,540px)*.08 + 58px);transition:opacity .45s}
+.icover::after{content:'';position:fixed;inset:16px;border:1px solid rgba(255,255,255,.22);border-radius:24px}
+.icover .lb{font-size:12px;font-weight:800;letter-spacing:.3em;color:#FF9271}
+.icover .ttl{font-size:clamp(40px,9vw,64px);font-weight:900;letter-spacing:-.04em;color:#fff;line-height:1.08;word-break:keep-all}
+.icover .ttl small{display:block;font-size:.3em;font-weight:700;letter-spacing:0;color:#D9CDFF;margin-top:10px}
+#intro.shrink .icover{opacity:0}
+.ihint{position:absolute;bottom:max(28px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;font-size:13px;font-weight:700;
+ color:rgba(255,255,255,.7);opacity:0;animation:iHint .6s ease 1s forwards}
+#intro.shrink .ihint{animation:none;opacity:0}
+@keyframes iHint{to{opacity:1}}
+/* 열린 뒤 첫 화면이 차례로 */
+html.intro-reveal .hero > div:first-child > *{animation:iUp .8s cubic-bezier(.2,.8,.2,1) both}
+html.intro-reveal .hero > div:first-child > *:nth-child(2){animation-delay:.08s}
+html.intro-reveal .hero > div:first-child > *:nth-child(3){animation-delay:.16s}
+html.intro-reveal .hero > div:first-child > *:nth-child(4){animation-delay:.24s}
+html.intro-reveal .hero > div:first-child > *:nth-child(5){animation-delay:.32s}
+@keyframes iUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){#intro{display:none}html.intro-on,html.intro-on body{overflow:auto}}
+</style>
+
+<div id="intro" role="button" aria-label="포트폴리오 열기">
+ <div class="glow"></div>
+ <div class="env" aria-hidden="true">
+  <div class="back"></div>
+  <div class="letter"><span class="lb">PORTFOLIO 2026</span><span class="nm">정이서</span><span class="sub">운영기획 · AI 에이전트 팀 운영</span></div>
+  <div class="pocket"><i class="l"></i><i class="r"></i><i class="b"></i></div>
+  <div class="flap"><i></i></div>
+ </div>
+ <div class="iseal" aria-hidden="true"><b>정</b></div>
+ <div class="icover" aria-hidden="true"><span class="lb">PORTFOLIO 2026</span><div class="ttl">정이서<small>운영기획 · AI 에이전트 팀 운영</small></div></div>
+ <div class="ihint">눌러서 열어 보세요</div>
+</div>
 <div class="aurora"></div><div class="grain"></div>
 
 <nav>
@@ -615,5 +695,32 @@ section{padding:64px 0 0}
       secs.forEach(function(x){io2.observe(x);});
     }
   }catch(e){}
+})();
+</script>
+
+<script>
+(function(){
+ var root=document.documentElement, el=document.getElementById('intro');
+ if(!el) return;
+ function kill(){try{root.classList.remove('intro-on');if(el.parentNode)el.parentNode.removeChild(el)}catch(e){}}
+ try{
+  if(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches){kill();return}
+  root.classList.add('intro-on');
+  var env=el.querySelector('.env');
+  function fit(){var W=Math.min(innerWidth*.86,540),H=W/1.5,y0=innerHeight/2+.12*H;
+   env.style.setProperty('--z',(Math.max(y0/(.62*H),(innerHeight-y0)/(.38*H),innerWidth/W)*1.06).toFixed(3))}
+  fit(); addEventListener('resize',fit);
+  var started=false, done=false;
+  function finish(){if(done)return;done=true;el.classList.add('gone');root.classList.remove('intro-on');root.classList.add('intro-reveal');
+   setTimeout(kill,1200)}
+  function go(){if(started)return;started=true;el.classList.add('shrink');
+   setTimeout(function(){el.classList.add('open')},1350);
+   setTimeout(function(){el.classList.add('zoom')},3100);
+   setTimeout(finish,3500)}
+  el.addEventListener('click',go);
+  document.addEventListener('keydown',function(){if(root.classList.contains('intro-on'))go()});
+  setTimeout(go,1500);
+  setTimeout(finish,8000);
+ }catch(e){kill()}
 })();
 </script>
